@@ -254,7 +254,7 @@ This pattern is common in real projects: rather than hardcoding one Copy activit
 ---
 
 ### 5. Production Approval Gate
-![Prod deployment approval](screenshots/prod-approval.png)
+![Prod deployment approval](screenshots/prod_approval.mov)
 
 **What it shows:** The Azure DevOps "Environment" configured for Prod, which requires a manual approval before the deployment job is allowed to run.
 
