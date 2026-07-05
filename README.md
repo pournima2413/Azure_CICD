@@ -254,7 +254,7 @@ This pattern is common in real projects: rather than hardcoding one Copy activit
 ---
 
 ### 5. Production Approval Gate
-![Prod deployment approval](screenshots/prod_approval.mov)
+![Prod deployment approval](screenshots/prod_approval.png)
 
 **What it shows:** The Azure DevOps "Environment" configured for Prod, which requires a manual approval before the deployment job is allowed to run.
 
@@ -284,20 +284,6 @@ This pattern is common in real projects: rather than hardcoding one Copy activit
 | Pipeline fails with a permissions/authorization error against Azure | Service connection doesn't have Contributor access on the target resource group | Recheck the Service Connection's role assignment in Azure DevOps Project Settings |
 | CD stage for QA/Prod runs before Dev finishes | Stage dependencies (`dependsOn`) not set correctly in `cicd_pipeline.yml` | Make sure each stage explicitly depends on the previous one and has `condition: succeeded()` |
 | Copy activity fails to reach GitHub | HTTP linked service URL or firewall/network rule blocking outbound access | Verify the HTTP linked service's base URL and that the ADF managed VNet (if used) allows outbound HTTPS |
-
----
-
-## How I'll Explain This Project in an Interview
-
-"I built an end-to-end CI/CD pipeline for Azure Data Factory using Azure DevOps. The goal was to avoid manually publishing ADF changes into multiple environments, which doesn't scale and is easy to get wrong.
-
-I set up three environments — Dev, QA, and Prod — each with its own resource group, Data Factory, Key Vault, and storage account. In Dev, I connected the factory to a Git repo and built a pipeline that uses a Lookup activity to read a config file, a ForEach activity to loop through entries, and a Copy activity to move CSV files from a public source into Azure Data Lake Storage.
-
-For the deployment side, I wrote an Azure DevOps YAML pipeline with two main parts. The CI stage validates the ADF resources and exports them into a single ARM template artifact. The CD stage then takes that same artifact and deploys it into each environment in sequence — Dev, then QA, then Prod — substituting a different parameter file each time so the environment-specific values (factory name, Key Vault URL, storage URL) are correct without changing the underlying template.
-
-I also added pre- and post-deployment PowerShell scripts, which Microsoft provides, to stop triggers before deploying and restart them afterward — and to clean up any resources that were deleted in the source but would otherwise remain in the target environment. Finally, I put an approval gate on the Prod stage using an Azure DevOps Environment, so nothing reaches production without a manual sign-off, even though Dev and QA deploy automatically.
-
-The biggest thing I took away from this project is that CI/CD for data platforms isn't really different in principle from CI/CD for application code — you're still validating, packaging once, and promoting the same artifact through environments — but the tooling (ARM templates, linked service credentials, trigger state) has some data-platform-specific wrinkles you have to account for."
 
 ---
 
